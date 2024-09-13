@@ -9,8 +9,12 @@ const port = process.env.PORT || 3005
 // express app
 const app = express()
 
+const corsOption = {
+    origin: ["https://localhost:3000"],
+};
+
 // middlewares
-app.use(cors())
+app.use(cors(corsOption))
 app.use(express.json())
 
 app.use((req, res, next) => {
