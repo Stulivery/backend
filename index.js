@@ -4,7 +4,7 @@ const express = require('express')
 // mysql || mongodb?
 const cors = require('cors')
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 3005
 
 // express app
 const app = express()
