@@ -1,0 +1,30 @@
+require('dotenv').config()
+
+const express = require('express')
+// mysql || mongodb?
+const cors = require('cors')
+
+const port = process.env.PORT || 8080
+
+// express app
+const app = express()
+
+// middlewares
+app.use(cors())
+app.use(express.json())
+
+app.use((req, res, next) => {
+    console.log(req.path, req.method)
+    next()
+})
+
+// routes
+app.get('/', (req, res, next) => {
+    res.json({ message: "Welcome to Stulivery app" })
+    next()
+})
+
+// connect app
+app.listen(port, () => {
+    console.log("connected and listening on port " + port)
+})
