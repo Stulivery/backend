@@ -33,6 +33,7 @@ const updateUserOtp = async (id, otp, expireAt) => {
     const expireTime = new Date(expireAt).toISOString().slice(0, 19).replace("T", " ");
     const query = "UPDATE users SET otp=?,expireAt=? WHERE id = ?";
     const [result] = await db.execute(query, [otp, expireTime, id]);
+    console.log(result.affectedRows)
     return result.affectedRows;
 };
 

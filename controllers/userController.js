@@ -46,7 +46,7 @@ const userLogin = async (req, res) => {
 };
 
 const sendEmail = (req, res) => {
-    const { email, userId } = req.body;
+    const { email, id } = req.body;
     function generateRandom6DigitNumber() {
         return Math.floor(Math.random() * 9000) + 1000;
     }
@@ -63,8 +63,9 @@ const sendEmail = (req, res) => {
             if (error) {
                 console.error(error);
                 res.status(403).json({ message: "Email not sent" });
+                return
             } else {
-                const updateuser = await userModel.updateUserOtp(userId, otp, expiresAt);
+                const updateuser = await userModel.updateUserOtp(id, otp, expiresAt);
                 if (updateuser === 0) {
                     res.status(404).json({ error: "Otp error" });
                 } else {
@@ -78,8 +79,7 @@ const sendEmail = (req, res) => {
 };
 
 const validateOtp = async (req, res) => {
-    const id = req.userId;
-    const { otp } = req.body;
+    const { otp, id } = req.body;
     const getrows = await userModel.getUserById(id);
     const userotp = getrows.otp;
     const userexpireAt = new Date(getrows.expireAt).getTime();
