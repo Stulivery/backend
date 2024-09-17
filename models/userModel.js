@@ -33,7 +33,6 @@ const updateUserOtp = async (id, otp, expireAt) => {
     const expireTime = new Date(expireAt).toISOString().slice(0, 19).replace("T", " ");
     const query = "UPDATE users SET otp=?,expireAt=? WHERE id = ?";
     const [result] = await db.execute(query, [otp, expireTime, id]);
-    console.log(result.affectedRows)
     return result.affectedRows;
 };
 
@@ -43,9 +42,15 @@ const getUserById = async (id) => {
     return rows[0];
 };
 
-const updateUserStatus = async (id, verifcationstatus) => {
+const updateUserVerificationStatus = async (id, verifcationstatus) => {
     const query = "UPDATE users SET verificationstatus=? WHERE id = ?";
     const [result] = await db.execute(query, [verifcationstatus, id]);
+    return result.affectedRows;
+};
+
+const updateUserStatus = async (id, userstatus) => {
+    const query = "UPDATE users SET userstatus=? WHERE id = ?";
+    const [result] = await db.execute(query, [userstatus, id]);
     return result.affectedRows;
 };
 
@@ -61,6 +66,7 @@ module.exports = {
     getUserByEmail,
     updateUserOtp,
     getUserById,
-    updateUserStatus,
+    updateUserVerificationStatus,
     updateUserPassword,
+    updateUserStatus
 };

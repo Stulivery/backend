@@ -91,7 +91,7 @@ const validateOtp = async (req, res) => {
     }
     if (otp == userotp) {
         const verifcationstatus = true;
-        const updateuser = await userModel.updateUserStatus(id, verifcationstatus);
+        const updateuser = await userModel.updateUserVerificationStatus(id, verifcationstatus);
         if (updateuser === 0) {
             return res.status(404).json({ message: "User not found" });
         } else {
@@ -113,10 +113,22 @@ const updatePassword = async (req, res) => {
     }
 }
 
+const updateUserstatus = async (req, res) => {
+    const { id, userstatus } = req.body;
+    const updateuserstatus = await userModel.updateUserStatus(id, userstatus);
+    if (updateuserstatus === 0) {
+        return res.status(403).json({message: "Status change failed"});
+    } else {
+        return res.status(201).json({message: "Status change successful"});
+    }
+}
+
 module.exports = {
     userRegistration,
     userLogin,
     sendEmail,
     validateOtp,
-    updatePassword
+    updatePassword,
+    updateUserstatus
 };
+ 
