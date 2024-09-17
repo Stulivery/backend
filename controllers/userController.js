@@ -113,7 +113,7 @@ const updatePassword = async (req, res) => {
     }
 }
 
-const updateUserstatus = async (req, res) => {
+const updateUserType = async (req, res) => {
     const { id, userstatus } = req.body;
     const updateuserstatus = await userModel.updateUserStatus(id, userstatus);
     if (updateuserstatus === 0) {
@@ -129,6 +129,6 @@ module.exports = {
     sendEmail,
     validateOtp,
     updatePassword,
-    updateUserstatus
+    updateUserType
 };
  

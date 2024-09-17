@@ -10,6 +10,6 @@ router.post('/login', UserController.userLogin);
 router.post('/confirmemail', UserController.sendEmail);
 router.post('/validateotp', UserController.validateOtp);
 router.post('/updatepassword', UserController.updatePassword);
-router.post('/updateuserstatus', UserController.updateUserstatus);
+router.post('/updateuserstatus', UserController.updateUserType);
 
 module.exports = router;
