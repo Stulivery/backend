@@ -24,9 +24,9 @@ const insertOrder = async (packagename, pickupaddress, name, pickupphonenumber, 
     return result.insertId;
 };
 
-const updateOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId) => {
-    const query = 'UPDATE orders SET packagename=?, pickupaddress=?, name=?, pickupphonenumber=?, additionalinfo=?, deliveryaddress=?, contactname=?, deliveryphonenumber=?, paymentmethod=? WHERE userId = ?';
-    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId]);
+const updateOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId) => {
+    const query = 'UPDATE orders SET packagename=?, pickupaddress=?, name=?, pickupphonenumber=?, additionalinfo=?, deliveryaddress=?, contactname=?, deliveryphonenumber=?, paymentmethod=? WHERE id = ?';
+    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId]);
     return result.affectedRows;
 };
 

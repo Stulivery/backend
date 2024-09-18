@@ -17,9 +17,9 @@ const insertOrderController = async (req, res) => {
 
 const updateOrderController = async (req, res) => {
 	const userId = req.userId;
-	const { packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod } = req.body;
+	const { packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod , orderId} = req.body;
 	try{
-        const updateorder=await orderModel.updateOrder(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId);
+        const updateorder=await orderModel.updateOrder(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId);
         if (updateorder=== 0) {
             res.status(403).json({ error: 'Order not found' });
         } else {
