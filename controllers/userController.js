@@ -10,7 +10,7 @@ const userRegistration = async (req, res) => {
     const verificationstatus = false;
     const hashedPassword = await bcrypt.hash(password, 8);
     const checkEmail = await userModel.getUserByEmail(email);
-    if (checkEmail.length > 0) {
+    if (checkEmail) {
         res.status(403).json({ message: "Email already exists" });
         return;
     }
@@ -29,22 +29,25 @@ const userRegistration = async (req, res) => {
 
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
-    const getUser = await userModel.getUserByEmail(email);
-    if (!getUser) {
+    const getrows = await userModel.getUserByEmail(email);
+    if (!getrows) {
         res.status(403).json({ auth: false, token: null, message: "User not found" });
         return
     }
-    const isPasswordValid = await bcrypt.compareSync(password, getUser[0].password);
+    const isPasswordValid = await bcrypt.compareSync(password, getrows.password);
     if (!isPasswordValid) {
         res.status(403).json({ message: "Invalid Password" });
         return;
     }
-    const token = jwt.sign({ id: getUser.id }, 'SECRET_KEY', { expiresIn: 86400 });
+    console.log(getrows.id)
+    const token = jwt.sign({ id: getrows.id }, SECRET_KEY, { expiresIn: 86400 }); // 24 hours
     res.status(201).json({ auth: true, token: token, message: "successful" });
 };
 
 const sendEmail = (req, res) => {
-    const { email, id } = req.body;
+    const id = req.userId;
+    const { email } = req.body;
+    console.log(id)
     function generateRandom6DigitNumber() {
         return Math.floor(Math.random() * 9000) + 1000;
     }
@@ -77,7 +80,8 @@ const sendEmail = (req, res) => {
 };
 
 const validateOtp = async (req, res) => {
-    const { otp, id } = req.body;
+    const id = req.userId;
+    const { otp } = req.body;
     const getrows = await userModel.getUserById(id);
     const userotp = getrows.otp;
     const userexpireAt = new Date(getrows.expireAt).getTime();
@@ -101,8 +105,10 @@ const validateOtp = async (req, res) => {
 };
 
 const updatePassword = async (req, res) => {
-    const { password, id } = req.body;
-    const getrows = await userModel.getUserById(id);
+    const id = req.userId;
+    console.log(id);
+    const { password } = req.body;
+    // const getrows = await userModel.getUserById(id);
     const updatePassword = await userModel.updateUserPassword(password,id);
     if (updatePassword === 0) {
         return res.status(403).json({message: "password change failed"});
@@ -112,14 +118,31 @@ const updatePassword = async (req, res) => {
 }
 
 const updateUserType = async (req, res) => {
-    const { id } = req.body;
-    const userstatus = false;
-    const updateuserstatus = await userModel.updateUserStatus(id, userstatus);
+    const id = req.userId;
+    const { userstatus, role } = req.body;
+    const updateuserstatus = await userModel.updateUserStatus(id, userstatus, role);
     if (updateuserstatus === 0) {
         return res.status(403).json({message: "Status change failed"});
     } else {
         return res.status(201).json({message: "Status change successful"});
     }
+}
+
+const updateUserDetails = async (req, res) => {
+    const id = req.userId;
+    const {name,address,phonenumber}=req.body
+    try{
+        const updateuser=await userModel.updateUser(id,name,address,phonenumber)
+        if (updateuser === 0) {
+            res.status(403).json({ error: 'User not found' });
+        } else {
+            res.status(201).json({ message: 'User updated' });
+        }
+    } catch (error) {
+        res.status(404).json({ error: 'Failed to update user' });
+    }
+ 
+
 }
 
 module.exports = {
@@ -128,6 +151,7 @@ module.exports = {
     sendEmail,
     validateOtp,
     updatePassword,
-    updateUserType
+    updateUserType,
+    updateUserDetails
 };
  

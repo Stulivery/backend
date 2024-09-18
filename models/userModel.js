@@ -10,6 +10,7 @@ const createTable = async () => {
       address VARCHAR(500)  NULL,
       verificationstatus BOOLEAN NULL,
       userstatus BOOLEAN NULL,
+      role VARCHAR(25),
       otp VARCHAR(6) NULL,
       expireAt TIMESTAMP NULL
     )
@@ -26,7 +27,7 @@ const insertUser = async (name, email, hashedPassword, phonenumber, address, ver
 const getUserByEmail = async (email) => {
     const query = "SELECT * FROM users WHERE email = ?";
     const [rows] = await db.execute(query, [email]);
-    return rows;
+    return rows[0];
 };
 
 const updateUserOtp = async (id, otp, expireAt) => {
@@ -48,15 +49,21 @@ const updateUserVerificationStatus = async (id, verifcationstatus) => {
     return result.affectedRows;
 };
 
-const updateUserStatus = async (id, userstatus) => {
-    const query = "UPDATE users SET userstatus=? WHERE id = ?";
-    const [result] = await db.execute(query, [userstatus, id]);
+const updateUserStatus = async (id, userstatus,role) => {
+    const query = "UPDATE users SET userstatus=?, role=? WHERE id = ?";
+    const [result] = await db.execute(query, [userstatus, role, id]);
     return result.affectedRows;
 };
 
 const updateUserPassword = async (password, id) => {
     const query = "UPDATE users SET password = ? WHERE id = ?";
     const [result] = await db.execute(query, [password, id]);
+    return result.affectedRows;
+};
+
+const updateUser = async (id, name,address,phonenumber) => {
+    const query = 'UPDATE users SET name = ?, address= ?,phonenumber=? WHERE id = ?';
+    const [result] = await db.execute(query, [name,address,phonenumber, id]);
     return result.affectedRows;
 };
 
@@ -67,6 +74,7 @@ module.exports = {
     updateUserOtp,
     getUserById,
     updateUserVerificationStatus,
+    updateUser,
     updateUserPassword,
     updateUserStatus
 };
