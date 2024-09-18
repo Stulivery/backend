@@ -6,7 +6,8 @@ const transporter = require("../services/emailServices");
 const SECRET_KEY = process.env.SECRET_KEY;
 const userRegistration = async (req, res) => {
     await userModel.createTable();
-    const { name, email, phonenumber, address, password, verificationstatus } = req.body;
+    const { name, email, phonenumber, address, password } = req.body;
+    const verificationstatus = false;
     const hashedPassword = await bcrypt.hash(password, 8);
     const checkEmail = await userModel.getUserByEmail(email);
     if (checkEmail.length > 0) {
@@ -16,7 +17,6 @@ const userRegistration = async (req, res) => {
     else {
         try {
             const userId = await userModel.insertUser(name, email, hashedPassword, phonenumber, address, verificationstatus);
-            console.log(userId);
             if(!userId) {
                 return res.status(201).json({ id: null, message: "failed" });
             }
@@ -25,7 +25,6 @@ const userRegistration = async (req, res) => {
             console.log(error);
         }
     }
-    console.log(checkEmail)
 };
 
 const userLogin = async (req, res) => {
@@ -35,7 +34,6 @@ const userLogin = async (req, res) => {
         res.status(403).json({ auth: false, token: null, message: "User not found" });
         return
     }
-    console.log(getUser)
     const isPasswordValid = await bcrypt.compareSync(password, getUser[0].password);
     if (!isPasswordValid) {
         res.status(403).json({ message: "Invalid Password" });
@@ -114,7 +112,8 @@ const updatePassword = async (req, res) => {
 }
 
 const updateUserType = async (req, res) => {
-    const { id, userstatus } = req.body;
+    const { id } = req.body;
+    const userstatus = false;
     const updateuserstatus = await userModel.updateUserStatus(id, userstatus);
     if (updateuserstatus === 0) {
         return res.status(403).json({message: "Status change failed"});
