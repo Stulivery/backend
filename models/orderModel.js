@@ -12,21 +12,22 @@ const createTable = async () => {
       deliveryaddress VARCHAR(500) NULL,
       contactname VARCHAR(255) NULL,
       deliveryphonenumber VARCHAR(25) NULL,
-      paymentmethod VARCHAR(25) NULL
+      paymentmethod VARCHAR(25) NULL,
+      amount INT(25)
     )
   `;
     await db.execute(query);
 };
 
-const insertOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId) => {
-    const query = "INSERT INTO orders(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId) VALUE(?,?,?,?,?,?,?,?,?,?)";
-    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId]);
+const insertOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId,amount) => {
+    const query = "INSERT INTO orders(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId,amount) VALUE(?,?,?,?,?,?,?,?,?,?,?)";
+    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId,amount]);
     return result.insertId;
 };
 
-const updateOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId) => {
-    const query = 'UPDATE orders SET packagename=?, pickupaddress=?, name=?, pickupphonenumber=?, additionalinfo=?, deliveryaddress=?, contactname=?, deliveryphonenumber=?, paymentmethod=? WHERE id = ?';
-    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId]);
+const updateOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId, amount) => {
+    const query = 'UPDATE orders SET packagename=?, pickupaddress=?, name=?, pickupphonenumber=?, additionalinfo=?, deliveryaddress=?, contactname=?, deliveryphonenumber=?, paymentmethod=?, amount=? WHERE id = ?';
+    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, amount, orderId]);
     return result.affectedRows;
 };
 

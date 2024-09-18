@@ -141,8 +141,6 @@ const updateUserDetails = async (req, res) => {
     } catch (error) {
         res.status(404).json({ error: 'Failed to update user' });
     }
- 
-
 }
 
 module.exports = {
