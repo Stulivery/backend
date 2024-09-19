@@ -3,9 +3,9 @@ const orderModel = require('../models/orderModel');
 const insertOrderController = async (req, res) => {
 	const userId = req.userId
 	await orderModel.createTable();
-	const { packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, amount } = req.body;
+	const { packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, amount, status } = req.body;
 	try {
-        const orderId = await orderModel.insertOrder(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId, amount);
+        const orderId = await orderModel.insertOrder(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId, amount, status);
         if(!orderId) {
             return res.status(201).json({ id: null, message: "failed" });
         }
@@ -17,9 +17,9 @@ const insertOrderController = async (req, res) => {
 
 const updateOrderController = async (req, res) => {
 	const userId = req.userId;
-	const { packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod , orderId, amount} = req.body;
+	const { packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod , orderId, amount, status} = req.body;
 	try{
-        const updateorder=await orderModel.updateOrder(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId, amount);
+        const updateorder=await orderModel.updateOrder(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId, amount, status);
         if (updateorder=== 0) {
             res.status(403).json({ error: 'Order not found' });
         } else {
