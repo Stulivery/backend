@@ -3,38 +3,45 @@ const createTable = async () => {
     const query = `
     CREATE TABLE IF NOT EXISTS orders (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      userId INT,
-      packagename VARCHAR(255) NULL,  
-      pickupaddress VARCHAR(500) NULL,
-      name VARCHAR(255) NULL,
-      pickupphonenumber VARCHAR(25) NULL,
-      additionalinfo VARCHAR(500) NULL,
-      deliveryaddress VARCHAR(500) NULL,
-      contactname VARCHAR(255) NULL,
-      deliveryphonenumber VARCHAR(25) NULL,
-      paymentmethod VARCHAR(25) NULL,
-      amount INT(25),
-      status VARCHAR(25)
+      userID INT,
+      orderID VARCHAR(255) NULL,  
+      orderStatus VARCHAR(50) NULL,
+      orderTimeDate TIMESTAMP NULL,
+      receiverLocation VARCHAR(200) NULL,
+      userLocation VARCHAR(200) NULL,
+      paymentMethod VARCHAR(200),
+      amount INT,
+      deliveryManID VARCHAR(200)
+
     )
   `;
     await db.execute(query);
 };
 
-const insertOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId,amount, status) => {
-    const query = "INSERT INTO orders(packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId,amount) VALUE(?,?,?,?,?,?,?,?,?,?,?,?)";
-    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, userId,amount]);
+const insertOrder = async (userID, orderID, orderStatus, receiverLocation, userLocation, paymentMethod, amount, deliveryManID) => {
+  const orderTimeDate = new Date().getTime();
+    const query = "INSERT INTO orders(userID, orderID, orderStatus, orderTimeDate, receiverLocation, userLocation, paymentMethod, amount, deliveryManID) VALUE(?,?,?,?,?,?,?,?,?)";
+    const [result] = await db.execute(query, [userID, orderID, orderStatus, orderTimeDate, receiverLocation, userLocation, paymentMethod, amount, deliveryManID]);
     return result.insertId;
 };
 
-const updateOrder = async (packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, orderId, amount, status) => {
-    const query = 'UPDATE orders SET packagename=?, pickupaddress=?, name=?, pickupphonenumber=?, additionalinfo=?, deliveryaddress=?, contactname=?, deliveryphonenumber=?, paymentmethod=?, amount=?,status=? WHERE id = ?';
-    const [result] = await db.execute(query, [packagename, pickupaddress, name, pickupphonenumber, additionalinfo, deliveryaddress, contactname, deliveryphonenumber, paymentmethod, amount, orderId]);
-    return result.affectedRows;
+const getOrderByID = async (orderID) => {
+  const query = "SELECT * FROM orders WHERE orderID = ?";
+  const [rows] = await db.execute(query, [orderID]);
+  return rows[0];
+}
+
+const updateOrder = async (userID, orderID, orderStatus, receiverLocation, userLocation, paymentMethod, amount, deliveryManID) => {
+  console.log(orderID)
+  const orderTimeDate = new Date().getTime();
+  const query = 'UPDATE orders SET orderID=?, orderStatus=?, orderTimeDate=?, receiverLocation=?, userLocation=?, paymentMethod=?, amount=?, deliveryManID=? WHERE orderID=?';
+  const [result] = await db.execute(query, [userID, orderStatus, orderTimeDate, receiverLocation, userLocation, paymentMethod, amount, deliveryManID, orderID]);
+  return result.affectedRows;
 };
 
-const getAllOrders = async (userId) => {
-  const query = 'SELECT * FROM orders WHERE userId = ?';
-  const [rows] = await db.execute(query, [userId]);
+const getAllOrders = async (userID) => {
+  const query = 'SELECT * FROM orders WHERE userID = ?';
+  const [rows] = await db.execute(query, [userID]);
   return rows;
 }
 
@@ -42,6 +49,7 @@ module.exports = {
   createTable,
   insertOrder,
   updateOrder,
-  getAllOrders
+  getAllOrders,
+  getOrderByID
 
 }
