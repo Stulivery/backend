@@ -6,7 +6,7 @@ const createTable = async () => {
         userID VARCHAR(200) NULL,
         orderID VARCHAR(200) NULL,
         orderStatus VARCHAR(200) NULL,
-        orderTimeDate TIMESTAMP NULL,
+        orderTimeDate TIMESTAMP CURRENT_TIMESTAMP NULL,
         deliveryphonenumber VARCHAR(25) NULL,
         additionalinfo VARCHAR(500) NULL,
         pickupLocation VARCHAR(200),
@@ -30,8 +30,8 @@ const createTable2 = async () => {
 
 const insertOrder = async (userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo) => {
     const orderTimeDate = new Date().getTime();
-    const query = "INSERT INTO orders(userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo, orderTimeDate) VALUE(?,?,?,?,?,?,?,?,?,?)";
-    const [result] = await db.execute(query, [userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo, orderTimeDate]);
+    const query = "INSERT INTO orders(userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo) VALUE(?,?,?,?,?,?,?,?,?)";
+    const [result] = await db.execute(query, [userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo]);
     return result.insertId;
 };
 
@@ -42,7 +42,6 @@ const getOrderByID = async (orderID) => {
 };
 
 const updateOrder = async (orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo, deliveryguyID) => {
-    const orderTimeDate = new Date().getTime();
     const query = "UPDATE orders SET deliveryphonenumber=?, deliverycontactname=?, orderStatus=?, deliveryLocation=?, pickupLocation=?, paymentMethod=?, additionalinfo=?, deliveryguyID=? WHERE orderID=?";
     const [result] = await db.execute(query, [deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo,deliveryguyID,orderID]);
     return result.affectedRows;
