@@ -12,15 +12,16 @@ const createTable = async () => {
       userstatus BOOLEAN NULL,
       role VARCHAR(25),
       otp VARCHAR(6) NULL,
+      gender VARCHAR(25) NULL,
       expireAt TIMESTAMP NULL
     )
   `;
     await db.execute(query);
 };
 
-const insertUser = async (name, email, hashedPassword, phonenumber, address, verificationstatus) => {
-    const query = "INSERT INTO users(name, email, password, phonenumber, address,  verificationstatus) VALUE(?,?,?,?,?,?)";
-    const [result] = await db.execute(query, [name, email, hashedPassword, phonenumber, address, verificationstatus]);
+const insertUser = async (name, email, hashedPassword, phonenumber, address, verificationstatus, gender) => {
+    const query = "INSERT INTO users(name, email, password, phonenumber, address,  verificationstatus, gender) VALUE(?,?,?,?,?,?,?)";
+    const [result] = await db.execute(query, [name, email, hashedPassword, phonenumber, address, verificationstatus, gender]);
     return result.insertId;
 };
 
@@ -68,9 +69,9 @@ const updateUserPassword = async (password, id) => {
     return result.affectedRows;
 };
 
-const updateUser = async (id, name,address,phonenumber) => {
-    const query = 'UPDATE users SET name = ?, address= ?,phonenumber=? WHERE id = ?';
-    const [result] = await db.execute(query, [name,address,phonenumber, id]);
+const updateUser = async (id, gender,address,phonenumber) => {
+    const query = 'UPDATE users SET gender = ?, address= ?,phonenumber=? WHERE id = ?';
+    const [result] = await db.execute(query, [gender,address,phonenumber, id]);
     return result.affectedRows;
 };
 

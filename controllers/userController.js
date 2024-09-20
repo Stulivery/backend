@@ -7,7 +7,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const { VerifyTemplate } = require('../services/emailTemplate'); 
 const userRegistration = async (req, res) => {
     await userModel.createTable();
-    const { name, email, phonenumber, address, password, } = req.body;
+    const { name, email, phonenumber, address, password, gender } = req.body;
     const verificationstatus = false;
     const hashedPassword = await bcrypt.hash(password, 8);
     const checkEmail = await userModel.getUserByEmail(email);
@@ -17,7 +17,7 @@ const userRegistration = async (req, res) => {
     }
     else {
         try {
-            const userId = await userModel.insertUser(name, email, hashedPassword, phonenumber, address, verificationstatus);
+            const userId = await userModel.insertUser(name, email, hashedPassword, phonenumber, address, verificationstatus, gender);
             if(!userId) {
                 return res.status(201).json({ id: null, message: "failed" });
             }
@@ -146,9 +146,9 @@ const updateUserType = async (req, res) => {
 
 const updateUserDetails = async (req, res) => {
     const id = req.userId;
-    const {name,address,phonenumber}=req.body
+    const {gender,address,phonenumber}=req.body
     try{
-        const updateuser=await userModel.updateUser(id,name,address,phonenumber)
+        const updateuser=await userModel.updateUser(id,gender,address,phonenumber)
         if (updateuser === 0) {
             res.status(403).json({ error: 'User not found' });
         } else {
