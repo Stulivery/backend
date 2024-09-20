@@ -4,7 +4,8 @@ const UserController = require('../controllers/userController');
 const OrderController = require('../controllers/orderController');
 const ImageController = require('../controllers/imageUploadController');
 const verifytoken=require('../middleware/jwtVerification');
-const uploadimage = require('../middleware/receiveImage')
+const uploadimage = require('../middleware/receiveImage');
+const uploadprofilepic = require('../middleware/receiveProfilePic');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -20,10 +21,11 @@ router.post('/update/updateuserdetails', verifytoken, UserController.updateUserD
 //orders route
 router.post('/order/insertorder', verifytoken, OrderController.insertOrderController);
 router.post('/order/updateorder', verifytoken, OrderController.updateOrderController);
-router.post('/order/getallorders', verifytoken, OrderController.getAllOrderController);
+router.post('/order/getalluserorders', verifytoken, OrderController.getAllUserOrderController);
+router.post('/order/getallorders', verifytoken, OrderController.getAllOrders)
 //upload image
 router.post('/upload/uploadimage', verifytoken, uploadimage, ImageController.uploadImageController);
-router.post('/upload/profilepic', verifytoken, ImageController.insertProfilePicController);
+router.post('/upload/profilepic', verifytoken, uploadprofilepic, ImageController.insertProfilePicController);
 router.get('/fetch/profilepic', verifytoken, ImageController.getProfilePictureController);
 
 module.exports = router;

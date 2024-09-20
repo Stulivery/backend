@@ -9,11 +9,12 @@ const createTable = async () => {
       password VARCHAR(255) NOT NULL,   
       address VARCHAR(500)  NULL,
       verificationstatus BOOLEAN NULL,
-      userstatus BOOLEAN NULL,
+      userstatus VARCHAR(25) NULL,
       role VARCHAR(25),
       otp VARCHAR(6) NULL,
       gender VARCHAR(25) NULL,
-      expireAt TIMESTAMP NULL
+      expireAt TIMESTAMP NULL,
+      deliveryManID VARCHAR(25)
     )
   `;
     await db.execute(query);
@@ -51,7 +52,8 @@ const updateUserVerificationStatus = async (id, verifcationstatus) => {
 };
 
 const updateUserDeliveryID = async (id, deliveryManID) => {
-    const query = "UPDATE users SET deliveryManID=? WHERE id = ?";
+    console.log(id, deliveryManID);
+    const query = "UPDATE users SET deliveryManID=? WHERE id=?";
     const [result] = await db.execute(query, [deliveryManID, id]);
     return result.affectedRows;
 };

@@ -6,14 +6,14 @@ const createTable = async () => {
             id INT AUTO_INCREMENT PRIMARY KEY,
             userID VARCHAR(500) NULL,
             filename VARCHAR(500) NULL,
-            profilepic VARCHAR(500) NULL,
+            profilepic VARCHAR(500) NULL
         )
     `;
     await db.execute(query);
 }
 
 const insertImage = async (filename, userID) => {
-    const query = 'INSERT INTO image(userID, filename) VALUES(?,?)'
+    const query = 'INSERT INTO images(userID, filename) VALUES(?,?)'
     const [result] = await db.execute(query, [userID, filename]);
     return result.insertId;
 }

@@ -2,44 +2,70 @@ const db = require("../database/db");
 const createTable = async () => {
     const query = `
     CREATE TABLE IF NOT EXISTS orders (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      userID INT NULL
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        userID VARCHAR(200) NULL,
+        orderID VARCHAR(200) NULL,
+        orderStatus VARCHAR(200) NULL,
+        orderTimeDate TIMESTAMP NULL,
+        deliveryphonenumber VARCHAR(25) NULL,
+        additionalinfo VARCHAR(500) NULL,
+        pickupLocation VARCHAR(200),
+        deliveryLocation VARCHAR(200) NUll,
+        paymentMethod VARCHAR(25),
+        deliverycontactname VARCHAR(200),
+        deliveryguyID VARCHAR(25)
     )
   `;
-  await db.execute(query);
+    await db.execute(query);
 };
 
-const insertOrder = async (userID, orderID, orderStatus, receiverLocation, userLocation, paymentMethod, amount) => {
-  const orderTimeDate = new Date().getTime();
-    const query = "INSERT INTO orders(userID, orderID, orderStatus, orderTimeDate, receiverLocation, userLocation, paymentMethod, amount) VALUE(?,?,?,?,?,?,?,?)";
-    const [result] = await db.execute(query, [userID, orderID, orderStatus, orderTimeDate, receiverLocation, userLocation, paymentMethod, amount]);
+const createTable2 = async () => {
+    const query = `
+        CREATE TABLE IF NOT EXISTS orderdetails(
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            orderID VARCHAR(25)
+        )
+    `
+}
+
+const insertOrder = async (userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo) => {
+    const orderTimeDate = new Date().getTime();
+    const query = "INSERT INTO orders(userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo, orderTimeDate) VALUE(?,?,?,?,?,?,?,?,?,?)";
+    const [result] = await db.execute(query, [userID, orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo, orderTimeDate]);
     return result.insertId;
 };
 
 const getOrderByID = async (orderID) => {
-  const query = "SELECT * FROM orders WHERE orderID = ?";
-  const [rows] = await db.execute(query, [orderID]);
-  return rows[0];
+    const query = "SELECT * FROM orders WHERE orderID = ?";
+    const [rows] = await db.execute(query, [orderID]);
+    return rows[0];
 };
 
-const updateOrder = async (userID, orderID, orderStatus, receiverLocation, userLocation, paymentMethod, amount, deliveryManID) => {
-  const orderTimeDate = new Date().getTime();
-  const query = 'UPDATE orders SET orderStatus=?, orderTimeDate=?, receiverLocation=?, userLocation=?, paymentMethod=?, amount=?, deliveryManID=? WHERE orderID=?';
-  const [result] = await db.execute(query, [orderStatus, orderTimeDate, receiverLocation, userLocation, paymentMethod, amount, deliveryManID, orderID]);
-  return result.affectedRows;
+const updateOrder = async (orderID, deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo, deliveryguyID) => {
+    const orderTimeDate = new Date().getTime();
+    const query = "UPDATE orders SET deliveryphonenumber=?, deliverycontactname=?, orderStatus=?, deliveryLocation=?, pickupLocation=?, paymentMethod=?, additionalinfo=?, deliveryguyID=? WHERE orderID=?";
+    const [result] = await db.execute(query, [deliveryphonenumber, deliverycontactname, orderStatus, deliveryLocation, pickupLocation, paymentMethod, additionalinfo,deliveryguyID,orderID]);
+    return result.affectedRows;
 };
 
-const getAllOrders = async (userID) => {
-  const query = 'SELECT * FROM orders WHERE userID = ?';
-  const [rows] = await db.execute(query, [userID]);
-  return rows;
+const getAllUserOrders = async (userID) => {
+    const query = "SELECT * FROM orders WHERE userID = ?";
+    const [rows] = await db.execute(query, [userID]);
+    return rows;
 };
+
+const getAllOrders = async () => {
+    const query = "SELECT * FROM orders";
+    const [rows] = await db.execute(query);
+    return rows;
+}
 
 module.exports = {
-  createTable,
-  insertOrder,
-  updateOrder,
-  getAllOrders,
-  getOrderByID
-
+    createTable,
+    insertOrder,
+    updateOrder,
+    getAllUserOrders,
+    getOrderByID,
+    getAllOrders,
+    createTable2
 };

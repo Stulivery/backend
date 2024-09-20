@@ -32,15 +32,12 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
     const getrows = await userModel.getUserByEmail(email);
     if (!getrows) {
-        res.status(403).json({ auth: false, token: null, message: "User not found" });
-        return
+        return res.status(403).json({ auth: false, token: null, message: "User not found" });
     }
     const isPasswordValid = await bcrypt.compareSync(password, getrows.password);
     if (!isPasswordValid) {
-        res.status(403).json({ message: "Invalid Password" });
-        return;
+        return res.status(403).json({ message: "Invalid Password" });
     }
-    console.log(getrows.id)
     const token = jwt.sign({ id: getrows.id }, SECRET_KEY, { expiresIn: 86400 }); // 24 hours
     res.status(201).json({ auth: true, token: token, message: "successful" });
 };
@@ -48,11 +45,10 @@ const userLogin = async (req, res) => {
 const sendEmail = (req, res) => {
     const id = req.userId;
     const { email } = req.body;
-    console.log(id)
-    function generateRandom6DigitNumber() {
+    function generateRandom4DigitNumber() {
         return Math.floor(Math.random() * 9000) + 1000;
-    }
-    const otp = generateRandom6DigitNumber();
+    };
+    const otp = generateRandom4DigitNumber();
     const expiresAt = Date.now() + 5 * 60 * 1000;
     const mailOptions = {
         from: "stulvilery@gmail.com",
@@ -107,13 +103,11 @@ const validateOtp = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     const id = req.userId;
-    console.log(id);
     const { password } = req.body;
-    // const getrows = await userModel.getUserById(id);
     const hashedPassword = await bcrypt.hash(password, 8);
     const updatePassword = await userModel.updateUserPassword(hashedPassword,id);
     if (updatePassword === 0) {
-        return res.status(403).json({message: "password change failed"});
+        return res.status(403).json({message: "Password change failed"});
     } else {
         return res.status(201).json({message: "Password change successful"});
     }
@@ -121,26 +115,27 @@ const updatePassword = async (req, res) => {
 
 const updateUserType = async (req, res) => {
     const id = req.userId;
-    const userstatus = true;
-    const { role } = req.body;
+    const { role, userstatus } = req.body;
+    let deliveryManID
     const updateuserstatus = await userModel.updateUserType(id, userstatus, role);
-    if(role === 'delivery') {
+    if(role !== 'user') {
         function generateRandom7DigitNumber() {
             return Math.floor(Math.random() * 9000000) + 1000000;
         };
-        const deliveryManID = `STU${generateRandom7DigitNumber()}DEL`;
-        const checkExistID = await userModel.getDeliveryMAnID(deliveryManID);
+        let deliveryManID = `STU${generateRandom7DigitNumber()}DEL`;
+        console.log(id, deliveryManID);
+        const checkExistID = await userModel.getDeliveryMAnID(id, deliveryManID);
         if(checkExistID){
-            return res.status(403).json({message: 'Error try again'})
+            return res.status(403).json({message: 'Error try again'});
         }
         else {
-            const updatedeliveryidstatus = await userModel.updateUserDeliveryID(deliveryManID);
+            const updatedeliveryidstatus = await userModel.updateUserDeliveryID(id, deliveryManID);
         }
     }
     if (updateuserstatus === 0) {
         return res.status(403).json({message: "Status change failed"});
     } else {
-        return res.status(201).json({message: "Status change successful"});
+        return res.status(201).json({message: "Status change successful", deliveryManID: deliveryManID});
     }
 }
 
