@@ -4,9 +4,10 @@ const userModel = require('../models/userModel');
 const jwt = require("jsonwebtoken");
 const transporter = require("../services/emailServices");
 const SECRET_KEY = process.env.SECRET_KEY;
+const { VerifyTemplate } = require('../services/emailTemplate'); 
 const userRegistration = async (req, res) => {
     await userModel.createTable();
-    const { name, email, phonenumber, address, password } = req.body;
+    const { name, email, phonenumber, address, password, } = req.body;
     const verificationstatus = false;
     const hashedPassword = await bcrypt.hash(password, 8);
     const checkEmail = await userModel.getUserByEmail(email);
@@ -57,7 +58,7 @@ const sendEmail = (req, res) => {
         from: "stulvilery@gmail.com",
         to: email,
         subject: "Email Verification",
-        html: `<b>Your otp is ${otp} </b>`,
+        html: VerifyTemplate(otp),
     };
     try {
         transporter.sendMail(mailOptions, async (error, info) => {
@@ -109,7 +110,8 @@ const updatePassword = async (req, res) => {
     console.log(id);
     const { password } = req.body;
     // const getrows = await userModel.getUserById(id);
-    const updatePassword = await userModel.updateUserPassword(password,id);
+    const hashedPassword = await bcrypt.hash(password, 8);
+    const updatePassword = await userModel.updateUserPassword(hashedPassword,id);
     if (updatePassword === 0) {
         return res.status(403).json({message: "password change failed"});
     } else {
@@ -119,8 +121,22 @@ const updatePassword = async (req, res) => {
 
 const updateUserType = async (req, res) => {
     const id = req.userId;
-    const { userstatus, role } = req.body;
-    const updateuserstatus = await userModel.updateUserStatus(id, userstatus, role);
+    const userstatus = true;
+    const { role } = req.body;
+    const updateuserstatus = await userModel.updateUserType(id, userstatus, role);
+    if(role === 'delivery') {
+        function generateRandom7DigitNumber() {
+            return Math.floor(Math.random() * 9000000) + 1000000;
+        };
+        const deliveryManID = `STU${generateRandom7DigitNumber()}DEL`;
+        const checkExistID = await userModel.getDeliveryMAnID(deliveryManID);
+        if(checkExistID){
+            return res.status(403).json({message: 'Error try again'})
+        }
+        else {
+            const updatedeliveryidstatus = await userModel.updateUserDeliveryID(deliveryManID);
+        }
+    }
     if (updateuserstatus === 0) {
         return res.status(403).json({message: "Status change failed"});
     } else {

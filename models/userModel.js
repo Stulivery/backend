@@ -49,7 +49,14 @@ const updateUserVerificationStatus = async (id, verifcationstatus) => {
     return result.affectedRows;
 };
 
-const updateUserStatus = async (id, userstatus,role) => {
+const updateUserDeliveryID = async (id, deliveryManID) => {
+    const query = "UPDATE users SET deliveryManID=? WHERE id = ?";
+    const [result] = await db.execute(query, [deliveryManID, id]);
+    return result.affectedRows;
+};
+
+
+const updateUserType = async (id, userstatus,role) => {
     const query = "UPDATE users SET userstatus=?, role=? WHERE id = ?";
     const [result] = await db.execute(query, [userstatus, role, id]);
     return result.affectedRows;
@@ -67,6 +74,12 @@ const updateUser = async (id, name,address,phonenumber) => {
     return result.affectedRows;
 };
 
+const getDeliveryMAnID = async (deliveryManID) => {
+  const query = "SELECT * FROM users WHERE deliveryManID = ?";
+  const [rows] = await db.execute(query, [deliveryManID]);
+  return rows[0];
+};
+
 module.exports = {
     createTable,
     insertUser,
@@ -76,5 +89,7 @@ module.exports = {
     updateUserVerificationStatus,
     updateUser,
     updateUserPassword,
-    updateUserStatus
+    updateUserType,
+    updateUserDeliveryID,
+    getDeliveryMAnID
 };

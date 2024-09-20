@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 const UserController = require('../controllers/userController');
 const OrderController = require('../controllers/orderController');
+const ImageController = require('../controllers/imageUploadController');
 const verifytoken=require('../middleware/jwtVerification');
+const uploadimage = require('../middleware/receiveImage')
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -12,12 +14,16 @@ router.post('/auth/register', UserController.userRegistration);
 router.post('/auth/login', UserController.userLogin);
 router.post('/auth/confirmemail', verifytoken, UserController.sendEmail);
 router.post('/auth/validateotp', verifytoken, UserController.validateOtp);
-router.post('/user/updatepassword', verifytoken, UserController.updatePassword);
-router.post('/user/updateuserstatus', verifytoken, UserController.updateUserType);
-router.post('/user/updateuserdetails', verifytoken, UserController.updateUserDetails);
+router.post('/update/updatepassword', verifytoken, UserController.updatePassword);
+router.post('/update/updateuserstatus', verifytoken, UserController.updateUserType);
+router.post('/update/updateuserdetails', verifytoken, UserController.updateUserDetails);
 //orders route
 router.post('/order/insertorder', verifytoken, OrderController.insertOrderController);
 router.post('/order/updateorder', verifytoken, OrderController.updateOrderController);
 router.post('/order/getallorders', verifytoken, OrderController.getAllOrderController);
+//upload image
+router.post('/upload/uploadimage', verifytoken, uploadimage, ImageController.uploadImageController);
+router.post('/upload/profilepic', verifytoken, ImageController.insertProfilePicController);
+router.get('/fetch/profilepic', verifytoken, ImageController.getProfilePictureController);
 
 module.exports = router;

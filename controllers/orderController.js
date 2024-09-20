@@ -5,20 +5,20 @@ const insertOrderController = async (req, res) => {
 	await orderModel.createTable();
 	function generateRandom7DigitNumber() {
         return Math.floor(Math.random() * 9000000) + 1000000;
-    }
-    const orderID = `STU${generateRandom7DigitNumber()}`
-	const { orderStatus, receiverLocation, userLocation, paymentMethod, amount, deliveryManID } = req.body;
+    };
+    const orderID = `STU${gen.erateRandom7DigitNumber()}`;
+	const { orderStatus, receiverLocation, userLocation, paymentMethod, amount } = req.body;
 	const checkExistOrder = await orderModel.getOrderByID(orderID)
 	if(checkExistOrder) {
 		return res.status(403).json({message: 'Order Not available'})
 	}
 	else {
 		try {
-        const getOrderID = await orderModel.insertOrder(userID, orderID, orderStatus, receiverLocation, userLocation, paymentMethod, amount, deliveryManID);
-        if(!getOrderID) {
-            return res.status(201).json({ id: null, message: "failed" });
-        }
-        res.status(201).json({ id: getOrderID, orderID: orderID , message: "successful" });
+	        const getOrderID = await orderModel.insertOrder(userID, orderID, orderStatus, receiverLocation, userLocation, paymentMethod, amount);
+	        if(!getOrderID) {
+	            return res.status(201).json({ id: null, message: "failed" });
+	        }
+	        res.status(201).json({ id: getOrderID, orderID: orderID , message: "successful" });
 	    } catch (error) {
 	        console.log(error);
 	    }
