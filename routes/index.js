@@ -3,6 +3,7 @@ var router = express.Router();
 const UserController = require('../controllers/userController');
 const OrderController = require('../controllers/orderController');
 const ImageController = require('../controllers/imageUploadController');
+const WalletController = require('../controllers/walletController');
 const verifytoken=require('../middleware/jwtVerification');
 const uploadimage = require('../middleware/receiveImage');
 const uploadprofilepic = require('../middleware/receiveProfilePic');
@@ -18,6 +19,8 @@ router.post('/auth/validateotp', verifytoken, UserController.validateOtp);
 router.post('/update/updatepassword', verifytoken, UserController.updatePassword);
 router.post('/update/updateuserstatus', verifytoken, UserController.updateUserType);
 router.post('/update/updateuserdetails', verifytoken, UserController.updateUserDetails);
+router.post('/update/updateuserpin', verifytoken, UserController.updateUserPin);
+router.post('/update/updateverificationdetails', verifytoken, UserController.updateVerificationDetails);
 //orders route
 router.post('/order/insertorder', verifytoken, OrderController.insertOrderController);
 router.post('/order/updateorder', verifytoken, OrderController.updateOrderController);
@@ -27,5 +30,7 @@ router.post('/order/getallorders', verifytoken, OrderController.getAllOrders)
 router.post('/upload/uploadimage', verifytoken, uploadimage, ImageController.uploadImageController);
 router.post('/upload/profilepic', verifytoken, uploadprofilepic, ImageController.insertProfilePicController);
 router.get('/fetch/profilepic', verifytoken, ImageController.getProfilePictureController);
+//wallet route
+router.post('/wallet/updatewalletdetails', verifytoken, WalletController.insertWalletDetailsController);
 
 module.exports = router;

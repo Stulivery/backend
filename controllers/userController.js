@@ -1,5 +1,4 @@
-const bcryptjs = require("bcrypt");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const userModel = require('../models/userModel');
 const jwt = require("jsonwebtoken");
 const transporter = require("../services/emailServices");
@@ -145,12 +144,45 @@ const updateUserDetails = async (req, res) => {
     try{
         const updateuser=await userModel.updateUser(id,gender,address,phonenumber)
         if (updateuser === 0) {
-            res.status(403).json({ error: 'User not found' });
+            res.status(403).json({ message: 'User not found' });
         } else {
             res.status(201).json({ message: 'User updated' });
         }
     } catch (error) {
-        res.status(404).json({ error: 'Failed to update user' });
+        res.status(404).json({ message: 'Failed to update user' });
+    }
+}
+
+const updateUserPin = async (req, res) => {
+    const userID = req.userId;
+    const { pin } = req.body;
+    const hashPin = await bcrypt.hash(pin, 8);
+    try {
+        const updatepin = await userModel.updateUSerPin(userID, hashPin);
+        if(updatepin===0){
+            res.status(403).json({ message: 'User not found' });
+        } else {
+            res.status(201).json({ message: 'User pin updated' });
+        }
+    } catch (error) {
+        res.status(404).json({ message: 'Failed to update user' });
+    }
+}
+
+const updateVerificationDetails = async (req, res) => {
+    const userID = req.userId;
+    const { bvn, nin } = req.body;
+    const hashBvn = await bcrypt.hash(bvn, 8);
+    const hashNin = await bcrypt.hash(nin, 8);
+    try {
+        const updatedetails = await userModel.updateVerificationDetails(userID, hashBvn, hashNin);
+        if (updatedetails === 0) {
+            res.status(403).json({ message: 'User not found' });
+        } else {
+            res.status(201).json({ message: 'User details updated' });
+        }
+    } catch (error) {
+        res.status(404).json({ message: 'Failed to update user details' });
     }
 }
 
@@ -161,6 +193,8 @@ module.exports = {
     validateOtp,
     updatePassword,
     updateUserType,
-    updateUserDetails
+    updateUserDetails,
+    updateUserPin,
+    updateVerificationDetails
 };
  

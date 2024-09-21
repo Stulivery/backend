@@ -6,7 +6,7 @@ const createTable = async () => {
         userID VARCHAR(200) NULL,
         orderID VARCHAR(200) NULL,
         orderStatus VARCHAR(200) NULL,
-        orderTimeDate TIMESTAMP CURRENT_TIMESTAMP NULL,
+        orderTimeDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         deliveryphonenumber VARCHAR(25) NULL,
         additionalinfo VARCHAR(500) NULL,
         pickupLocation VARCHAR(200),

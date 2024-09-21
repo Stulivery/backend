@@ -14,7 +14,10 @@ const createTable = async () => {
       otp VARCHAR(6) NULL,
       gender VARCHAR(25) NULL,
       expireAt TIMESTAMP NULL,
-      deliveryManID VARCHAR(25)
+      deliveryManID VARCHAR(25),
+      pin VARCHAR(200) NULL,
+      bvn VARCHAR(200) NULL,
+      nin VARCHAR(200) NULL
     )
   `;
     await db.execute(query);
@@ -83,6 +86,18 @@ const getDeliveryMAnID = async (deliveryManID) => {
   return rows[0];
 };
 
+const updateVerificationDetails = async (userID, bvn, nin) => {
+    const query = 'UPDATE users SET bvn=?, nin=? WHERE id=?';
+    const [result] = await db.execute(q7, [bvn, nin, userID]);
+    return result.affectedRows;
+}
+
+const updateUSerPin = async (userID, pin) => {
+    const query = 'UPDATE users SET pin=? WHERE id=?';
+    const [result] = await db.execute(query, [pin, userID]);
+    return result.affectedRows;
+}
+
 module.exports = {
     createTable,
     insertUser,
@@ -94,5 +109,7 @@ module.exports = {
     updateUserPassword,
     updateUserType,
     updateUserDeliveryID,
-    getDeliveryMAnID
+    getDeliveryMAnID,
+    updateVerificationDetails,
+    updateUSerPin
 };
