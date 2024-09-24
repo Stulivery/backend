@@ -11,8 +11,7 @@ const storage = multer.diskStorage({
     filename: async (req, file, cb) => {
         const userId = req.userId; // get userId from verifytoken
         const filename = await bcrypt.hash(`${userId}`, 10);
-        const slugifiedFilename = encodeURIComponent(filename)
-        cb(null, `${slugifiedFilename}${path.extname(file.originalname)}`);
+        cb(null, `${filename}${path.extname(file.originalname)}`);
     }
 });
 

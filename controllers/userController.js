@@ -121,7 +121,7 @@ const updateUserType = async (req, res) => {
         function generateRandom7DigitNumber() {
             return Math.floor(Math.random() * 9000000) + 1000000;
         };
-        let deliveryManID = `STU${generateRandom7DigitNumber()}DEL`;
+        deliveryManID = `STU${generateRandom7DigitNumber()}DEL`;
         console.log(id, deliveryManID);
         const checkExistID = await userModel.getDeliveryMAnID(id, deliveryManID);
         if(checkExistID){
@@ -184,7 +184,48 @@ const updateVerificationDetails = async (req, res) => {
     } catch (error) {
         res.status(404).json({ message: 'Failed to update user details' });
     }
-}
+};
+
+const getUserDetails = async (req, res) => {
+    const userID = req.userId;
+    try {
+        const getrows = await userModel.getUserById(userID);
+        if(!getrows) {
+            return res.status(403).json({message: 'User not found', details: null});
+        }
+        else {
+            // "details": {
+            //     "id": 1,
+            //     "name": "SamuelOni",
+            //     "email": "samueloni0987@gmail.com",
+            //     "phonenumber": "09025243830",
+            //     "password": "$2b$08$YS6i5VbKcsbwVzFwiukfWeNNOm2XR7cZiQLCRkAQiuCmTbxyt66By",
+            //     "address": "Akure",
+            //     "verificationstatus": 0,
+            //     "userstatus": null,
+            //     "role": null,
+            //     "otp": null,
+            //     "gender": "male",
+            //     "expireAt": null,
+            //     "deliveryManID": null,
+            //     "pin": null,
+            //     "bvn": null,
+            //     "nin": null
+            //   }
+            const data = {
+                name: getrows.name,
+                email: getrows.email,
+                phonenumber: getrows.phonenumber,
+                address: getrows.address,
+                gender: getrows.gender,
+                role: getrows.role
+            };
+            res.status(201).json({message: 'successful', details: data});
+        }
+    } catch (error) {
+        res.status(404).json({message: 'Failed to get user details'});
+    }
+};
 
 module.exports = {
     userRegistration,
@@ -195,6 +236,7 @@ module.exports = {
     updateUserType,
     updateUserDetails,
     updateUserPin,
-    updateVerificationDetails
+    updateVerificationDetails,
+    getUserDetails
 };
  

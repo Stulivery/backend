@@ -21,6 +21,7 @@ router.post('/update/updateuserstatus', verifytoken, UserController.updateUserTy
 router.post('/update/updateuserdetails', verifytoken, UserController.updateUserDetails);
 router.post('/update/updateuserpin', verifytoken, UserController.updateUserPin);
 router.post('/update/updateverificationdetails', verifytoken, UserController.updateVerificationDetails);
+router.post('/fetch/fetchuserdetails', verifytoken, UserController.getUserDetails);
 //orders route
 router.post('/order/insertorder', verifytoken, OrderController.insertOrderController);
 router.post('/order/updateorder', verifytoken, OrderController.updateOrderController);
@@ -29,8 +30,8 @@ router.post('/order/getallorders', verifytoken, OrderController.getAllOrders)
 //upload image
 router.post('/upload/uploadimage', verifytoken, uploadimage, ImageController.uploadImageController);
 router.post('/upload/profilepic', verifytoken, uploadprofilepic, ImageController.insertProfilePicController);
-router.get('/fetch/profilepic', verifytoken, ImageController.getProfilePictureController);
+router.post('/fetch/profilepic', verifytoken, ImageController.getProfilePictureController);
 //wallet route
 router.post('/wallet/updatewalletdetails', verifytoken, WalletController.insertWalletDetailsController);
-
+router.post('/wallet/getwalletdetails', verifytoken, WalletController.getWalletDetailController);
 module.exports = router;

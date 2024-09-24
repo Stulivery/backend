@@ -7,19 +7,30 @@ const createTable = async () => {
             acctname VARCHAR(200),
             walletID VARCHAR(25),
             acctnumber VARCHAR(200),
-            pin VARCHAR(200) 
+            acctbalance VARCHAR(200),
+            transactionpin VARCHAR(200) ,
+            bankname VARCHAR(200)
         )
   `;
     await db.execute(query);
 };
 
-const insertWalletDetails = async (userID, acctname, acctnumber, walletID, pin) => {
-    const query = "INSERT INTO wallet(userID, acctname, acctnumber, walletID, pin) VALUE(?,?,?,?,?)";
-    const [result] = await db.execute(query, [userID, acctname, acctnumber, walletID, pin]);
+const insertWalletDetails = async (userID, acctname, acctnumber, walletID, acctbalance, bankname, pin) => {
+    console.log(userID);
+    const query = "INSERT INTO wallet(userID, acctname, acctnumber, walletID, acctbalance, bankname, transactionpin) VALUE(?,?,?,?,?,?,?)";
+    const [result] = await db.execute(query, [userID, acctname, acctnumber, walletID, acctbalance, bankname, pin]);
     return result.insertId;
 };
 
+const getWalletDetails = async (userID) => {
+    const query = 'SELECT * FROM wallet WHERE userID=?'
+    const [result] = await db.execute(query, [userID]);
+    console.log(result);
+    return result;
+}
+
 module.exports = {
     createTable,
-    insertWalletDetails
+    insertWalletDetails,
+    getWalletDetails
 }

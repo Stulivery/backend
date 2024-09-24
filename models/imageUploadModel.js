@@ -21,7 +21,8 @@ const insertImage = async (filename, userID) => {
 const updateProfilePic = async (profilepic, userID) => {
     const query = 'UPDATE images SET profilepic=? WHERE userID=?'
     const [result] = await db.execute(query, [profilepic, userID]);
-    return result[0].affectedRows;
+    console.log(result);
+    return result.affectedRows;
 }
 
 const getImageById = async (userID) => {
