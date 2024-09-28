@@ -16,15 +16,6 @@ const insertWalletDetailsController = async (req, res) => {
     const hashUserID = await bcrypt.hash(`${userID}`, 8);
     const hashAcctBalance = await encryptionServices.encryptAlgorithm(acctbalance);
     const hashBankName = await encryptionServices.encryptAlgorithm(bankname);
-    // console.log({
-    //     acctname: hashAccountName,
-    //     acctname: hashAccountNumber,
-    //     transactionpin: hashPin,
-    //     userID: hashUserID,
-    //     walletID: hashWalletID,
-    //     acctbalance: hashAcctBalance,
-    //     bankname: hashBankName,
-    // });
     try {
         const insertwalletdetails = await walletModel.insertWalletDetails(
             userID,

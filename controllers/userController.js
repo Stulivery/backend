@@ -194,24 +194,6 @@ const getUserDetails = async (req, res) => {
             return res.status(403).json({message: 'User not found', details: null});
         }
         else {
-            // "details": {
-            //     "id": 1,
-            //     "name": "SamuelOni",
-            //     "email": "samueloni0987@gmail.com",
-            //     "phonenumber": "09025243830",
-            //     "password": "$2b$08$YS6i5VbKcsbwVzFwiukfWeNNOm2XR7cZiQLCRkAQiuCmTbxyt66By",
-            //     "address": "Akure",
-            //     "verificationstatus": 0,
-            //     "userstatus": null,
-            //     "role": null,
-            //     "otp": null,
-            //     "gender": "male",
-            //     "expireAt": null,
-            //     "deliveryManID": null,
-            //     "pin": null,
-            //     "bvn": null,
-            //     "nin": null
-            //   }
             const data = {
                 name: getrows.name,
                 email: getrows.email,
@@ -221,7 +203,7 @@ const getUserDetails = async (req, res) => {
                 role: getrows.role
             };
             res.status(201).json({message: 'successful', details: data});
-        }
+        } 
     } catch (error) {
         res.status(404).json({message: 'Failed to get user details'});
     }
