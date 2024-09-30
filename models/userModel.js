@@ -1,31 +1,31 @@
 const db = require("../database/db");
 const createTable = async () => {
+    //Name,Phonenumber,email,Password,Address,GenderSelectOption,StudentId,roleSelectOption
     const query = `
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255)  NULL,
+      name VARCHAR(255) NOT  NULL,
       email VARCHAR(255) NOT NULL,
-      phonenumber VARCHAR(25)  NULL,
-      password VARCHAR(255) NOT NULL,   
+      phonenumber VARCHAR(25) NOT  NULL,
+      password VARCHAR(50) NOT NULL,   
       address VARCHAR(500)  NULL,
+      studentid VARCHAR(50) NULL,
+      role VARCHAR(25),
+      gender VARCHAR(25) NULL,
       verificationstatus BOOLEAN NULL,
       userstatus VARCHAR(25) NULL,
-      role VARCHAR(25),
-      otp VARCHAR(6) NULL,
-      gender VARCHAR(25) NULL,
-      expireAt TIMESTAMP NULL,
-      deliveryManID VARCHAR(25),
-      pin VARCHAR(200) NULL,
-      bvn VARCHAR(200) NULL,
-      nin VARCHAR(200) NULL
+      pin VARCHAR(6) NULL,
+      bvn VARCHAR(15) NULL,
+      nin VARCHAR(15) NULL,
+      createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
     await db.execute(query);
 };
-
-const insertUser = async (name, email, hashedPassword, phonenumber, address, verificationstatus, gender) => {
-    const query = "INSERT INTO users(name, email, password, phonenumber, address,  verificationstatus, gender) VALUE(?,?,?,?,?,?,?)";
-    const [result] = await db.execute(query, [name, email, hashedPassword, phonenumber, address, verificationstatus, gender]);
+//Name,Phonenumber,email,Password,Address,GenderSelectOption,StudentId,roleSelectOption
+const insertUser = async (Name,Phonenumber,email,Password,Address,GenderSelectOption,StudentId,roleSelectOption,verificationstatus,userstatus) => {
+    const query = "INSERT INTO users(name,phonenumber, email, password, address,studentid,role, gender,verificationstatus,userstatus) VALUE(?,?,?,?,?,?,?,?,?,?)";
+    const [result] = await db.execute(query, [Name,Phonenumber,email,Password,Address,StudentId,roleSelectOption,GenderSelectOption,verificationstatus,userstatus]);
     return result.insertId;
 };
 

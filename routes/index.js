@@ -5,13 +5,18 @@ const OrderController = require('../controllers/orderController');
 const ImageController = require('../controllers/imageUploadController');
 const WalletController = require('../controllers/walletController');
 const verifytoken=require('../middleware/jwtVerification');
+const verifytokenotp=require('../middleware/jwtotpverification')
 const uploadimage = require('../middleware/receiveImage');
 const uploadprofilepic = require('../middleware/receiveProfilePic');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
+//verifyEmail
+router.post('/auth/sendotp',UserController.generateOtp);
+router.post('/auth/verifyemail',verifytokenotp,UserController.verifyEmail);
 //users route
+
 router.post('/auth/register', UserController.userRegistration);
 router.post('/auth/login', UserController.userLogin);
 router.post('/auth/confirmemail', verifytoken, UserController.sendEmail);

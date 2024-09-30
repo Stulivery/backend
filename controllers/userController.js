@@ -4,11 +4,64 @@ const jwt = require("jsonwebtoken");
 const transporter = require("../services/emailServices");
 const SECRET_KEY = process.env.SECRET_KEY;
 const { VerifyTemplate } = require('../services/emailTemplate'); 
+const { GenerateRandom } = require("../services/randomnumber");
+const { verifyOtpToken } = require("../services/validateotp");
+
+const generateOtp=async(req,res)=>{
+    const {email}=req.body
+    const otp=GenerateRandom()
+    const mailOptions={
+        from:'miresumiresume@gmail.com',
+        to:email,
+        subject:'Email Verification',
+        html:VerifyTemplate(otp)
+    }
+    transporter.sendMail(mailOptions,async(error,info)=>{
+        if(error){
+            console.error(error)
+            res.status(500).json({message:'Error sending email'})
+        }
+        else{
+            // sign jwt 
+            console.log('Email sent:' + info.response)
+            const token = jwt.sign({ otp }, SECRET_KEY, { expiresIn: '5m' }); // 24 hours
+            res.status(201).json({otptoken: token, message: "successful" });
+        }
+    }) 
+}
+const verifyEmail = async (req, res) => {
+    const { otp } = req.body; // OTP sent by the client
+    console.log("OTP from request body:", otp);
+    
+    const otpToken = req.otp; // This is the OTP extracted from the token
+    console.log("OTP from token:", otpToken);
+  
+    // Now you can check if the provided OTP matches the OTP from the token
+    if (!otpToken) {
+      return res.status(403).json({ auth: false, message: 'No token provided.' });
+    }
+  
+    try {
+      if (otp.toString() === otpToken.toString()) {
+        console.log('OTP is valid!');
+        return res.status(201).json({ message: 'Verify Successful' });
+      } else {
+        console.log('OTP is invalid or expired!');
+        return res.status(400).json({ message: 'Invalid OTP' });
+      }
+    } catch (error) {
+      console.error('Verification error:', error);
+      return res.status(500).json({ message: 'Internal server error.' });
+    }
+  };
+  
 const userRegistration = async (req, res) => {
     await userModel.createTable();
-    const { name, email, phonenumber, address, password, gender } = req.body;
+    //Name,Phonenumber,email,Password,Address,GenderSelectOption,StudentId,roleSelectOption
+    const { Name,Phonenumber,email,Password,Address,GenderSelectOption,StudentId,roleSelectOption } = req.body;
     const verificationstatus = false;
-    const hashedPassword = await bcrypt.hash(password, 8);
+    const userstatus='user'
+    const hashedPassword = await bcrypt.hash(Password, 8);
     const checkEmail = await userModel.getUserByEmail(email);
     if (checkEmail) {
         res.status(403).json({ message: "Email already exists" });
@@ -16,7 +69,7 @@ const userRegistration = async (req, res) => {
     }
     else {
         try {
-            const userId = await userModel.insertUser(name, email, hashedPassword, phonenumber, address, verificationstatus, gender);
+            const userId = await userModel.insertUser(Name,Phonenumber,email,hashedPassword,Address,GenderSelectOption,StudentId,roleSelectOption,verificationstatus,userstatus);
             if(!userId) {
                 return res.status(201).json({ id: null, message: "failed" });
             }
@@ -228,6 +281,8 @@ const getUserDetails = async (req, res) => {
 };
 
 module.exports = {
+    generateOtp,
+    verifyEmail,
     userRegistration,
     userLogin,
     sendEmail,
